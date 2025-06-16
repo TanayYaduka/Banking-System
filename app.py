@@ -56,26 +56,19 @@ def login_ui():
 # --- User Dashboard ---
 def dashboard_ui():
     user = st.session_state.current_user
+
+    # Permanent welcome message
     st.success(f"✅ Welcome, {user.name}!")
 
-    # Show stored messages from previous actions
-    if "message" in st.session_state:
-        st.success(st.session_state.message)
-        del st.session_state.message
-
-    if "error" in st.session_state:
-        st.error(st.session_state.error)
-        del st.session_state.error
-
-    st.subheader(f"👋 Hello, {user.name}")
+    st.subheader("🏦 Account Details")
     st.markdown(f"**Account Number:** {user.account_counter}")
     st.markdown(f"**Account Type:** {'Savings' if isinstance(user, SavingsAccount) else 'Current'}")
     st.markdown(f"**Current Balance:** ₹ {user.get_balance():.2f}")
 
     st.divider()
 
-    # Deposit
-   deposit_amount = st.number_input("💵 Deposit Amount:", min_value=0.0, key="deposit")
+    # Deposit Section
+    deposit_amount = st.number_input("💵 Deposit Amount:", min_value=0.0, key="deposit")
 
     if st.button("Deposit"):
         deposit(user, deposit_amount)
@@ -86,8 +79,7 @@ def dashboard_ui():
         st.success(st.session_state.deposit_message)
         del st.session_state.deposit_message
 
-
-    # Withdraw
+    # Withdraw Section
     withdraw_amount = st.number_input("🏧 Withdraw Amount:", min_value=0.0, key="withdraw")
 
     if st.button("Withdraw"):
@@ -96,16 +88,14 @@ def dashboard_ui():
         else:
             st.session_state.withdraw_error = "❌ Insufficient balance."
         st.rerun()
-    
+
     if "withdraw_message" in st.session_state:
         st.success(st.session_state.withdraw_message)
         del st.session_state.withdraw_message
-    
+
     if "withdraw_error" in st.session_state:
         st.error(st.session_state.withdraw_error)
         del st.session_state.withdraw_error
-
-
 
     # Interest Check
     if isinstance(user, SavingsAccount):
@@ -118,7 +108,6 @@ def dashboard_ui():
         st.session_state.message = "Logged out successfully."
         st.session_state.current_user = None
         st.rerun()
-
 
 
 # --- Main App ---
