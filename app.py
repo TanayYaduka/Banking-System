@@ -10,6 +10,11 @@ if "accounts" not in st.session_state:
 if "current_user" not in st.session_state:
     st.session_state.current_user = None
 
+if "message" not in st.session_state:
+    st.session_state.message = None
+
+if "error" not in st.session_state:
+    st.session_state.error = None
 
 # --- Account Creation ---
 def create_account_ui():
@@ -45,7 +50,7 @@ def login_ui():
 
         if acc_number in accounts:
             st.session_state.current_user = accounts[acc_number]
-            st.success(f"✅ Welcome, {accounts[acc_number].name}!")
+            st.session_state.message = f"✅ Welcome, {accounts[acc_number].name}!"
             st.rerun()
         else:
             st.error("❌ Invalid account number.")
@@ -54,6 +59,15 @@ def login_ui():
 # --- User Dashboard ---
 def dashboard_ui():
     user = st.session_state.current_user
+    # Show stored messages from previous actions
+    if "message" in st.session_state:
+        st.success(st.session_state.message)
+        del st.session_state.message
+
+    if "error" in st.session_state:
+        st.error(st.session_state.error)
+        del st.session_state.error
+
     st.subheader(f"👋 Hello, {user.name}")
     st.markdown(f"**Account Number:** {user.account_counter}")
     st.markdown(f"**Account Type:** {'Savings' if isinstance(user, SavingsAccount) else 'Current'}")
@@ -65,17 +79,18 @@ def dashboard_ui():
     deposit_amount = st.number_input("💵 Deposit Amount:", min_value=0.0, key="deposit")
     if st.button("Deposit"):
         deposit(user, deposit_amount)
-        st.success(f"✅ Deposited ₹{deposit_amount:.2f}")
+        st.session_state.message = f"✅ Deposited ₹{deposit_amount:.2f}"
         st.rerun()
 
     # Withdraw
     withdraw_amount = st.number_input("🏧 Withdraw Amount:", min_value=0.0, key="withdraw")
     if st.button("Withdraw"):
         if withdraw(user, withdraw_amount):
-            st.success(f"✅ Withdrawn ₹{withdraw_amount:.2f}")
+            st.session_state.message = f"✅ Withdrawn ₹{withdraw_amount:.2f}"
         else:
-            st.error("❌ Insufficient balance.")
+            st.session_state.error = "❌ Insufficient balance."
         st.rerun()
+
 
     # Interest Check
     if isinstance(user, SavingsAccount):
@@ -85,9 +100,10 @@ def dashboard_ui():
 
     # Logout
     if st.button("🔒 Logout"):
+        st.session_state.message = "Logged out successfully."
         st.session_state.current_user = None
-        st.success("Logged out successfully.")
         st.rerun()
+
 
 
 # --- Main App ---
