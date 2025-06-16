@@ -116,12 +116,12 @@ def dashboard_ui():
 # --- Main App ---
 def main():
     if st.session_state.get("do_login_rerun", False):
-    st.session_state.pop("do_login_rerun")
-    st.rerun()
+        st.session_state.pop("do_login_rerun")
+        st.rerun()
     
     if st.session_state.get("do_create_rerun", False):
-    st.session_state.pop("do_create_rerun")
-    st.rerun()
+        st.session_state.pop("do_create_rerun")
+        st.rerun()
 
     st.set_page_config(page_title="SIT Bank", page_icon="🏦", layout="centered")
     st.title("🏦 Welcome to SIT Bank")
