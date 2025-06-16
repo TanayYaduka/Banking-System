@@ -25,14 +25,16 @@ def create_account_ui():
         if not name:
             st.error("⚠️ Please enter a name.")
             return
-
+    
         if acc_type == "Savings":
             account = SavingsAccount(name, initial_deposit)
         else:
             account = CurrentAccount(name, initial_deposit)
-
+    
         st.session_state.accounts[account.account_counter] = account
-        st.success(f"✅ Account created successfully! Your account number is **{account.account_counter}**")
+        st.session_state.message = f"✅ Account created successfully! Your account number is **{account.account_counter}**"
+        st.session_state.do_create_rerun = True
+
 
 
 # --- Login ---
@@ -47,10 +49,10 @@ def login_ui():
 
         if acc_number in accounts:
             st.session_state.current_user = accounts[acc_number]
-            st.session_state.message = f"✅ Welcome, {accounts[acc_number].name}!"
-            st.rerun()
+            st.session_state.do_login_rerun = True
         else:
             st.error("❌ Invalid account number.")
+
 
 
 # --- User Dashboard ---
@@ -110,8 +112,17 @@ def dashboard_ui():
         st.rerun()
 
 
+
 # --- Main App ---
 def main():
+    if st.session_state.get("do_login_rerun", False):
+    st.session_state.pop("do_login_rerun")
+    st.rerun()
+    
+    if st.session_state.get("do_create_rerun", False):
+    st.session_state.pop("do_create_rerun")
+    st.rerun()
+
     st.set_page_config(page_title="SIT Bank", page_icon="🏦", layout="centered")
     st.title("🏦 Welcome to SIT Bank")
     st.caption("Nagpur Branch | Simple Banking with Streamlit")
