@@ -45,6 +45,7 @@ def login_ui():
 
         if acc_number in accounts:
             st.session_state.current_user = accounts[acc_number]
+            st.rerun()
             st.success(f"✅ Welcome, {accounts[acc_number].name}!")
         else:
             st.error("❌ Invalid account number.")
@@ -64,14 +65,17 @@ def dashboard_ui():
     deposit_amount = st.number_input("💵 Deposit Amount:", min_value=0.0, key="deposit")
     if st.button("Deposit"):
         deposit(user, deposit_amount)
+        st.rerun()
         st.success(f"✅ Deposited ₹{deposit_amount:.2f}")
-
+        
     # Withdraw
     withdraw_amount = st.number_input("🏧 Withdraw Amount:", min_value=0.0, key="withdraw")
     if st.button("Withdraw"):
         if withdraw(user, withdraw_amount):
+            st.rerun()
             st.success(f"✅ Withdrawn ₹{withdraw_amount:.2f}")
         else:
+            st.rerun()
             st.error("❌ Insufficient balance.")
 
     # Interest Check
@@ -83,6 +87,7 @@ def dashboard_ui():
     # Logout
     if st.button("🔒 Logout"):
         st.session_state.current_user = None
+        st.rerun()
         st.success("Logged out successfully.")
 
 
