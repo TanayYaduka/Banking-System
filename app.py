@@ -10,9 +10,6 @@ if "accounts" not in st.session_state:
 if "current_user" not in st.session_state:
     st.session_state.current_user = None
 
-if "message" not in st.session_state:
-    st.session_state.message = None
-
 if "error" not in st.session_state:
     st.session_state.error = None
 
@@ -59,6 +56,8 @@ def login_ui():
 # --- User Dashboard ---
 def dashboard_ui():
     user = st.session_state.current_user
+    st.success(f"✅ Welcome, {user.name}!")
+
     # Show stored messages from previous actions
     if "message" in st.session_state:
         st.success(st.session_state.message)
@@ -76,20 +75,36 @@ def dashboard_ui():
     st.divider()
 
     # Deposit
-    deposit_amount = st.number_input("💵 Deposit Amount:", min_value=0.0, key="deposit")
+   deposit_amount = st.number_input("💵 Deposit Amount:", min_value=0.0, key="deposit")
+
     if st.button("Deposit"):
         deposit(user, deposit_amount)
-        st.session_state.message = f"✅ Deposited ₹{deposit_amount:.2f}"
+        st.session_state.deposit_message = f"✅ Deposited ₹{deposit_amount:.2f}"
         st.rerun()
+
+    if "deposit_message" in st.session_state:
+        st.success(st.session_state.deposit_message)
+        del st.session_state.deposit_message
+
 
     # Withdraw
     withdraw_amount = st.number_input("🏧 Withdraw Amount:", min_value=0.0, key="withdraw")
+
     if st.button("Withdraw"):
         if withdraw(user, withdraw_amount):
-            st.session_state.message = f"✅ Withdrawn ₹{withdraw_amount:.2f}"
+            st.session_state.withdraw_message = f"✅ Withdrawn ₹{withdraw_amount:.2f}"
         else:
-            st.session_state.error = "❌ Insufficient balance."
+            st.session_state.withdraw_error = "❌ Insufficient balance."
         st.rerun()
+    
+    if "withdraw_message" in st.session_state:
+        st.success(st.session_state.withdraw_message)
+        del st.session_state.withdraw_message
+    
+    if "withdraw_error" in st.session_state:
+        st.error(st.session_state.withdraw_error)
+        del st.session_state.withdraw_error
+
 
 
     # Interest Check
