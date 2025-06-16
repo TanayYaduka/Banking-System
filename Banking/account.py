@@ -15,8 +15,12 @@ class BankAccount:
             if amount <= self.__balance:
                 self.__balance -= amount
                 print(f"Withdraw of {amount} successful. Remaining balance is {self.get_balance()}")
+                return True
+            else:
+                return False
         else:
             print("Invalid amount. Please enter a positive number.")
+            return False
 
     def deposit(self, amount):
         if amount > 0:
