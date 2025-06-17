@@ -87,12 +87,6 @@ def dashboard_ui():
             st.session_state.action_message = "❌ Insufficient balance."
         st.rerun()
 
-    # Interest Check
-    if isinstance(user, SavingsAccount):
-        if st.button("📈 Calculate Interest"):
-            interest = user.calculate_interest()
-            st.info(f"Interest earned: ₹{interest:.2f}")
-
     # Logout
     if st.button("🔒 Logout"):
         st.session_state.current_user = None
